@@ -18,7 +18,9 @@ namespace Web.Controllers
 
         [HttpGet]
         [Route("api/items")]
-        public async Task<IEnumerable<ItemDto>> GetItems() => await _sender.Send(new GetItemsQuery());
+        public async Task<IEnumerable<ItemDto>> GetItems(int? categoryId, [FromQuery(Name = "p")] int? page) 
+            => 
+            await _sender.Send(new GetItemsQuery(categoryId, page));
 
         [HttpPost]
         [Route("api/items")]

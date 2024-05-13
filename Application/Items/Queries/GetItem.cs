@@ -21,7 +21,10 @@ public class GetItemQueryHandler : IRequestHandler<GetItemQuery, ItemDto>
 
     public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
     {
-        Item? item = await _context.Items.FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
+        Item? item = await _context.Items
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
+
         return _mapper.Map<ItemDto>(item);
     }
 }

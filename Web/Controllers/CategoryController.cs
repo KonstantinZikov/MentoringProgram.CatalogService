@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
 {
-    [ApiController]
-    
+    [ApiController]    
     public class CategoryController : ControllerBase
     {
         private readonly ISender _sender;
@@ -20,20 +19,20 @@ namespace Web.Controllers
         [Route("api/categories")]
         public async Task<IEnumerable<CategoryDto>> GetCategories() => await _sender.Send(new GetCategoriesQuery());
 
+        [HttpGet]
+        [Route("api/categories/{id}")]
+        public async Task<CategoryDto> GetCategory(int id) => await _sender.Send(new GetCategoryQuery(id));
+
         [HttpPost]
         [Route("api/categories")]
         public async Task<int> AddCategory(CreateCategoryCommand command) => await _sender.Send(command);
 
         [HttpPut]
         [Route("api/categories")]
-        public async Task AddCategory(UpdateCategoryCommand command) => await _sender.Send(command);
+        public async Task UpdateCategory(UpdateCategoryCommand command) => await _sender.Send(command);
 
         [HttpDelete]
-        [Route("api/categories")]
-        public async Task AddCategory(DeleteCategoryCommand command) => await _sender.Send(command);
-
-        [HttpGet]
         [Route("api/categories/{id}")]
-        public async Task<CategoryDto> GetCategory(int id) => await _sender.Send(new GetCategoryQuery(id));
+        public async Task DeleteCategory(int id) => await _sender.Send(new DeleteCategoryCommand(id));       
     }
 }

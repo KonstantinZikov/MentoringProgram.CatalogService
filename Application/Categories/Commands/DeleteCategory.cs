@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interface;
+using Ardalis.GuardClauses;
 using Domain.Entities;
 using MediatR;
 
@@ -20,10 +21,9 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         Category? category = await _context.Categories
             .FindAsync([request.id], cancellationToken);
 
-        if (category != null)
-        {
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync(cancellationToken);
-        }      
+        Guard.Against.NotFound(request.id.ToString(), category);
+
+        _context.Categories.Remove(category);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
