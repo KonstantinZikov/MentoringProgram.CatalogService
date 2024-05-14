@@ -5,10 +5,6 @@ namespace Application.Carts.Queries;
 
 public class CategoryDto
 {
-    public CategoryDto()
-    {
-    }
-
     public int Id { get; init; }
 
     public required string Name { get; set; }

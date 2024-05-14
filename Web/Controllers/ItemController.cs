@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web.Controllers
 {
     [ApiController]
-    
+    [ApiVersion("1.0")]
     public class ItemController : ControllerBase
     {
         private readonly ISender _sender;
@@ -19,8 +19,7 @@ namespace Web.Controllers
         [HttpGet]
         [Route("api/items")]
         public async Task<IEnumerable<ItemDto>> GetItems(int? categoryId, [FromQuery(Name = "p")] int? page) 
-            => 
-            await _sender.Send(new GetItemsQuery(categoryId, page));
+            =>  await _sender.Send(new GetItemsQuery(categoryId, page));
 
         [HttpPost]
         [Route("api/items")]
@@ -28,11 +27,19 @@ namespace Web.Controllers
 
         [HttpPut]
         [Route("api/items")]
-        public async Task AddItem(UpdateItemCommand command) => await _sender.Send(command);
+        public async Task<IResult> UpdateItem(UpdateItemCommand command)
+        {
+            await _sender.Send(command);
+            return Results.NoContent();
+        }
 
         [HttpDelete]
         [Route("api/items")]
-        public async Task AddItem(DeleteItemCommand command) => await _sender.Send(command);
+        public async Task<IResult> DeleteItem(DeleteItemCommand command)
+        {
+            await _sender.Send(command);
+            return Results.NoContent();
+        }
 
         [HttpGet]
         [Route("api/items/{id}")]
