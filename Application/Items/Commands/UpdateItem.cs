@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interface;
 using Ardalis.GuardClauses;
 using Domain.Entities;
+using Domain.Events;
 using Domain.ValueObjects;
 using MediatR;
 
@@ -55,6 +56,8 @@ public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand>
 
             item.Price = new Money(request.Price, request.PriceCurrency);
             item.Image = string.IsNullOrEmpty(request.ImageUrl) ? null : new Image { Url = request.ImageUrl };
+
+            item.AddDomainEvent(new ItemUpdatedEvent(item));
 
             await _context.SaveChangesAsync(cancellationToken);
         }

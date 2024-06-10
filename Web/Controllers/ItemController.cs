@@ -1,5 +1,7 @@
+using Application.Items;
 using Application.Items.Commands;
 using Application.Items.Queries;
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace Web.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/items")]
     public class ItemController : ControllerBase
     {
         private readonly ISender _sender;
@@ -17,16 +20,13 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        [Route("api/items")]
         public async Task<IEnumerable<ItemDto>> GetItems(int? categoryId, [FromQuery(Name = "p")] int? page) 
             =>  await _sender.Send(new GetItemsQuery(categoryId, page));
 
         [HttpPost]
-        [Route("api/items")]
         public async Task<int> AddItem(CreateItemCommand command) => await _sender.Send(command);
 
         [HttpPut]
-        [Route("api/items")]
         public async Task<IResult> UpdateItem(UpdateItemCommand command)
         {
             await _sender.Send(command);
@@ -34,7 +34,6 @@ namespace Web.Controllers
         }
 
         [HttpDelete]
-        [Route("api/items")]
         public async Task<IResult> DeleteItem(DeleteItemCommand command)
         {
             await _sender.Send(command);
@@ -42,7 +41,7 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        [Route("api/items/{id}")]
+        [Route("{id}")]
         public async Task<ItemDto> GetItem(int id) => await _sender.Send(new GetItemQuery(id));
     }
 }

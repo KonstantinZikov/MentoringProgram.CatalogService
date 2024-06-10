@@ -19,23 +19,32 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		RabbitMQ|Any CPU = RabbitMQ|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.RabbitMQ|Any CPU.ActiveCfg = RabbitMQ|Any CPU
+		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.RabbitMQ|Any CPU.Build.0 = RabbitMQ|Any CPU
 		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26FC4AF3-0CD9-4102-96A7-E12366EF6570}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.RabbitMQ|Any CPU.ActiveCfg = Release|Any CPU
+		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.RabbitMQ|Any CPU.Build.0 = Release|Any CPU
 		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6C47E6D-6C01-43C4-A49F-CBF1B855E2A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.RabbitMQ|Any CPU.ActiveCfg = Release|Any CPU
+		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.RabbitMQ|Any CPU.Build.0 = Release|Any CPU
 		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8444F7F8-2B4F-4D2D-ACB2-095C4B6FD20D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.RabbitMQ|Any CPU.ActiveCfg = Release|Any CPU
+		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.RabbitMQ|Any CPU.Build.0 = Release|Any CPU
 		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0AEE95C-7B0B-4F9D-B4F0-6EAA9BBF936D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

@@ -1,5 +1,6 @@
 using Application.Carts.Commands;
 using Application.Carts.Queries;
+using Asp.Versioning;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace Web.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/categories")]
     public class CategoryController : ControllerBase
     {
         private readonly ISender _sender;
@@ -27,11 +28,10 @@ namespace Web.Controllers
         }
 
         [HttpGet()]
-        [Route("api/categories")]
         public async Task<IEnumerable<CategoryDto>> GetCategories() => await _sender.Send(new GetCategoriesQuery());
 
         [HttpGet()]
-        [Route("api/categories/{id}")]
+        [Route("{id}")]
         public async Task<CategoryDto> GetCategory(int id)
         {
             var category = await _sender.Send(new GetCategoryQuery(id));
@@ -39,11 +39,9 @@ namespace Web.Controllers
         } 
 
         [HttpPost()]
-        [Route("api/categories")]
         public async Task<int> AddCategory(CreateCategoryCommand command) => await _sender.Send(command);
 
         [HttpPut()]
-        [Route("api/categories")]
         public async Task<IResult> UpdateCategory(UpdateCategoryCommand command)
         {
             await _sender.Send(command);
@@ -51,7 +49,7 @@ namespace Web.Controllers
         }
 
         [HttpDelete()]
-        [Route("api/categories/{id}")]
+        [Route("{id}")]
         public async Task<IResult> DeleteCategory(int id)
         {
             await _sender.Send(new DeleteCategoryCommand(id));

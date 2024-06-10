@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Application.Common.Interface;
+using Infrastructure.Data.Interceptors;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -10,8 +12,11 @@ public static class DependencyInjection
     {
         string connectionString = $"Data Source=catalogService.db";
 
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseSqlite(connectionString, b => b.MigrationsAssembly(nameof(Infrastructure)));
         });
 

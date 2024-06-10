@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Items.Queries
+namespace Application.Items
 {
     public class ItemDto
     {
