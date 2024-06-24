@@ -1,30 +1,24 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Identity;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Items.Queries;
 
+[Authorize($"{Roles.Manager},{Roles.Buyer}")]
 public record GetItemQuery(int id) : IRequest<ItemDto>;
 
-public class GetItemQueryHandler : IRequestHandler<GetItemQuery, ItemDto>
+public class GetItemQueryHandler(IApplicationDbContext context, IMapper mapper) : IRequestHandler<GetItemQuery, ItemDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public GetItemQueryHandler(IApplicationDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
     {
-        Item? item = await _context.Items
+        Item? item = await context.Items
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
 
-        return _mapper.Map<ItemDto>(item);
+        return mapper.Map<ItemDto>(item);
     }
 }

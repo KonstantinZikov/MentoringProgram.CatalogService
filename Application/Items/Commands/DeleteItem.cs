@@ -1,29 +1,25 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using Domain.Entities;
+using Domain.Identity;
 using MediatR;
 
 namespace Application.Items.Commands;
 
+[Authorize(Roles.Manager)]
 public record DeleteItemCommand(int id) : IRequest;
 
-public class DeleteItemCommandHandler : IRequestHandler<DeleteItemCommand>
+public class DeleteItemCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteItemCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteItemCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(DeleteItemCommand request, CancellationToken cancellationToken)
     {
-        Item? item = await _context.Items
+        Item? item = await context.Items
             .FindAsync([request.id], cancellationToken);
 
         if (item != null)
         {
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.Items.Remove(item);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -1,29 +1,25 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using Ardalis.GuardClauses;
 using Domain.Entities;
+using Domain.Identity;
 using MediatR;
 
-namespace Application.Carts.Commands;
+namespace Application.Categories.Commands;
 
+[Authorize(Roles.Manager)]
 public record DeleteCategoryCommand(int id) : IRequest;
 
-public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
+public class DeleteCategoryCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteCategoryCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteCategoryCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        Category? category = await _context.Categories
+        Category? category = await context.Categories
             .FindAsync([request.id], cancellationToken);
 
         Guard.Against.NotFound(request.id.ToString(), category);
 
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Categories.Remove(category);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

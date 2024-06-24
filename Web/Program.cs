@@ -5,6 +5,8 @@ using Application;
 using System.Reflection;
 using Web.Infrastructure;
 using Microsoft.OpenApi.Models;
+using Application.Common.Interfaces;
+using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,17 +52,17 @@ builder.Services.AddSwaggerGen((options =>
     });
 }));
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUser, CurrentUser>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddInfrastructureServices();
-
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
-
 
 var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
 // Configure the HTTP request pipeline.
@@ -76,7 +78,6 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
-
 
 app.UseExceptionHandler(options => { });
 

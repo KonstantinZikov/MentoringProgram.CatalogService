@@ -1,5 +1,5 @@
-﻿using Ardalis.GuardClauses;
-using FluentValidation;
+﻿using Application.Common.Exceptions;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +16,8 @@ public class CustomExceptionHandler : IExceptionHandler
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
+                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
             };
     }
 
@@ -57,6 +59,30 @@ public class CustomExceptionHandler : IExceptionHandler
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "The specified resource was not found.",
             Detail = exception.Message
+        });
+    }
+
+    private async Task HandleUnauthorizedAccessException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status401Unauthorized,
+            Title = "Unauthorized",
+            Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
+        });
+    }
+
+    private async Task HandleForbiddenAccessException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status403Forbidden,
+            Title = "Forbidden",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
         });
     }
 }

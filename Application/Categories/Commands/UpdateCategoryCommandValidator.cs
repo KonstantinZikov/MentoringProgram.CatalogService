@@ -1,5 +1,4 @@
-﻿using Application.Carts.Commands;
-using FluentValidation;
+﻿using FluentValidation;
 namespace Application.Categories.Commands;
 
 public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>

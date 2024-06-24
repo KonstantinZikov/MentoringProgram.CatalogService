@@ -1,8 +1,9 @@
-using Application.Carts.Commands;
-using Application.Carts.Queries;
+using Application.Categories.Commands;
+using Application.Categories.Queries;
 using Asp.Versioning;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
 
@@ -27,10 +28,10 @@ namespace Web.Controllers
             _linkGenerator = linkGenerator;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IEnumerable<CategoryDto>> GetCategories() => await _sender.Send(new GetCategoriesQuery());
 
-        [HttpGet()]
+        [HttpGet]
         [Route("{id}")]
         public async Task<CategoryDto> GetCategory(int id)
         {
@@ -38,17 +39,17 @@ namespace Web.Controllers
             return await SetCategoryLinks(category);
         } 
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<int> AddCategory(CreateCategoryCommand command) => await _sender.Send(command);
 
-        [HttpPut()]
+        [HttpPut]
         public async Task<IResult> UpdateCategory(UpdateCategoryCommand command)
         {
             await _sender.Send(command);
             return Results.NoContent();
         }
 
-        [HttpDelete()]
+        [HttpDelete]
         [Route("{id}")]
         public async Task<IResult> DeleteCategory(int id)
         {

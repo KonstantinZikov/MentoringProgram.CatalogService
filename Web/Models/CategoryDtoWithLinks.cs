@@ -1,4 +1,4 @@
-﻿using Application.Carts.Queries;
+﻿using Application.Categories.Queries;
 using AutoMapper;
 
 namespace Web.Models

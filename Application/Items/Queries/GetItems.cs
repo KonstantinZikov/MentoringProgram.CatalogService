@@ -1,28 +1,23 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
+using Domain.Identity;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Items.Queries;
 
+[Authorize($"{Roles.Manager},{Roles.Buyer}")]
 public record GetItemsQuery(int? categoryId, int? page) : IRequest<IReadOnlyList<ItemDto>>;
 
-public class GetItemsQueryHandler : IRequestHandler<GetItemsQuery, IReadOnlyList<ItemDto>>
+public class GetItemsQueryHandler(IApplicationDbContext context, IMapper mapper)
+    : IRequestHandler<GetItemsQuery, IReadOnlyList<ItemDto>>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public GetItemsQueryHandler(IApplicationDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task<IReadOnlyList<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<Item> itemsQuery = _context.Items;
+        IQueryable<Item> itemsQuery = context.Items;
 
         if (request.categoryId != null)
         {
@@ -35,7 +30,7 @@ public class GetItemsQueryHandler : IRequestHandler<GetItemsQuery, IReadOnlyList
             .Skip((page - 1) * ItemConstants.ItemsPageSize)
             .Take(ItemConstants.ItemsPageSize)     
             .AsNoTracking()
-            .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ItemDto>(mapper.ConfigurationProvider)
             .OrderBy(c => c.Id)
             .ToListAsync(cancellationToken);
     }

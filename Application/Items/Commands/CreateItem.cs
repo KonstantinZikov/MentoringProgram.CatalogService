@@ -1,11 +1,14 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using Ardalis.GuardClauses;
 using Domain.Entities;
+using Domain.Identity;
 using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Items.Commands;
 
+[Authorize(Roles.Manager)]
 public record CreateItemCommand : IRequest<int>
 {
     public required string Name { get; init; }
@@ -23,18 +26,11 @@ public record CreateItemCommand : IRequest<int>
     public required int Amount { get; set; }
 }
 
-public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, int>
+public class CreateItemCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateItemCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateItemCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
-        Category? category = _context.Categories.FindAsync([request.CategoryId], cancellationToken).Result;
+        Category? category = context.Categories.FindAsync([request.CategoryId], cancellationToken).Result;
 
         Guard.Against.NotFound(request.CategoryId, category);
 
@@ -54,8 +50,8 @@ public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, int>
             item.Image = new Image { Url = request.ImageUrl };
         }
 
-        _context.Items.Add(item);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Items.Add(item);
+        await context.SaveChangesAsync(cancellationToken);
 
         return item.Id;
     }

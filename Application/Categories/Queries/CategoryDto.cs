@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Carts.Queries;
+namespace Application.Categories.Queries;
 
 public class CategoryDto
 {

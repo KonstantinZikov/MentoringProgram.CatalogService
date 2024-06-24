@@ -1,11 +1,14 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using Ardalis.GuardClauses;
 using Domain.Entities;
+using Domain.Identity;
 using Domain.ValueObjects;
 using MediatR;
 
-namespace Application.Carts.Commands;
+namespace Application.Categories.Commands;
 
+[Authorize(Roles.Manager)]
 public record UpdateCategoryCommand : IRequest
 {
     public required int Id { get; init; }
@@ -17,18 +20,11 @@ public record UpdateCategoryCommand : IRequest
     public int? ParentCategoryId { get; init; }
 }
 
-public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand>
+public class UpdateCategoryCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateCategoryCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public UpdateCategoryCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        Category? category = await _context.Categories
+        Category? category = await context.Categories
             .FindAsync([request.Id], cancellationToken);
 
         Guard.Against.Null(category);
@@ -47,7 +43,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
             }
             else
             {
-                Category? parentCategory = await _context.Categories
+                Category? parentCategory = await context.Categories
                 .FindAsync([request.ParentCategoryId], cancellationToken);
 
                 Guard.Against.NotFound((int)request.ParentCategoryId, parentCategory);
@@ -55,7 +51,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
                 category.ParentCategory = parentCategory;
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }       
     }
 }

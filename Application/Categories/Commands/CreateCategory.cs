@@ -1,11 +1,14 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Identity;
+using Application.Common.Interfaces;
 using Ardalis.GuardClauses;
 using Domain.Entities;
+using Domain.Identity;
 using Domain.ValueObjects;
 using MediatR;
 
-namespace Application.Carts.Commands;
+namespace Application.Categories.Commands;
 
+[Authorize(Roles.Manager)]
 public record CreateCategoryCommand : IRequest<int>
 {
     public required string Name { get; init; }
@@ -15,15 +18,8 @@ public record CreateCategoryCommand : IRequest<int>
     public int? ParentCategoryId { get; init; }
 }
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, int>
+public class CreateCategoryCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateCategoryCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateCategoryCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var category = new Category
@@ -35,7 +31,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
         if (request.ParentCategoryId != null)
         {
-            Category? parentCategory = await _context.Categories
+            Category? parentCategory = await context.Categories
                 .FindAsync([request.ParentCategoryId], cancellationToken);
 
             Guard.Against.NotFound((int)request.ParentCategoryId, parentCategory);
@@ -48,9 +44,9 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
             category.Image = new Image { Url = request.ImageUrl };
         }
 
-        _context.Categories.Add(category);
+        context.Categories.Add(category);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
         return category.Id;
     }
 }
