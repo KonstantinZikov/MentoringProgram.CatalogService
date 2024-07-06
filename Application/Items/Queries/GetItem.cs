@@ -16,6 +16,7 @@ public class GetItemQueryHandler(IApplicationDbContext context, IMapper mapper) 
     public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
     {
         Item? item = await context.Items
+            .Include(i => i.Category)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
 

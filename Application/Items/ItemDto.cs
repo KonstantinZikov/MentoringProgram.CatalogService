@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.Categories.Queries;
+using AutoMapper;
 using Domain.Entities;
 
 namespace Application.Items
@@ -13,7 +14,7 @@ namespace Application.Items
 
         public string? ImageUrl { get; init; }
 
-        public required int CategoryId { get; set; }
+        public required CategoryDto Category { get; set; }
 
         public decimal Price { get; set; }
 
@@ -28,7 +29,6 @@ namespace Application.Items
                 CreateMap<Item, ItemDto>()
                     .ForMember(d => d.ImageUrl, opt => opt.MapFrom(s => s.Image != null ? s.Image.Url : null))
                     .ForMember(d => d.Price, opt => opt.MapFrom(s => s.Price.Amount))
-                    .ForMember(d => d.CategoryId, opt => opt.MapFrom(s => s.Category != null ? s.Category.Id : (int?)null))
                     .ForMember(d => d.PriceCurrency, opt => opt.MapFrom(s => s.Price.Currency.ToString()));
             }
         }

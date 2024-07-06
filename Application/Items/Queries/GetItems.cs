@@ -17,7 +17,7 @@ public class GetItemsQueryHandler(IApplicationDbContext context, IMapper mapper)
 {
     public async Task<IReadOnlyList<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<Item> itemsQuery = context.Items;
+        IQueryable<Item> itemsQuery = context.Items.Include(i => i.Category);
 
         if (request.categoryId != null)
         {

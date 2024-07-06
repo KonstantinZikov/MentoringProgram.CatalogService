@@ -12,40 +12,30 @@ namespace Web.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/categories")]
-    public class CategoryController : ControllerBase
+    public class CategoryController(
+        ISender sender,
+        IMapper mapper,
+        LinkGenerator linkGenerator)
+        : ControllerBase
     {
-        private readonly ISender _sender;
-        private readonly IMapper _mapper;
-        private readonly LinkGenerator _linkGenerator;
-
-        public CategoryController(
-            ISender sender,
-            IMapper mapper,
-            LinkGenerator linkGenerator)
-        {
-            _sender = sender;
-            _mapper = mapper;
-            _linkGenerator = linkGenerator;
-        }
-
         [HttpGet]
-        public async Task<IEnumerable<CategoryDto>> GetCategories() => await _sender.Send(new GetCategoriesQuery());
+        public async Task<IEnumerable<CategoryDto>> GetCategories() => await sender.Send(new GetCategoriesQuery());
 
         [HttpGet]
         [Route("{id}")]
         public async Task<CategoryDto> GetCategory(int id)
         {
-            var category = await _sender.Send(new GetCategoryQuery(id));
+            var category = await sender.Send(new GetCategoryQuery(id));
             return await SetCategoryLinks(category);
         } 
 
         [HttpPost]
-        public async Task<int> AddCategory(CreateCategoryCommand command) => await _sender.Send(command);
+        public async Task<int> AddCategory(CreateCategoryCommand command) => await sender.Send(command);
 
         [HttpPut]
         public async Task<IResult> UpdateCategory(UpdateCategoryCommand command)
         {
-            await _sender.Send(command);
+            await sender.Send(command);
             return Results.NoContent();
         }
 
@@ -53,7 +43,7 @@ namespace Web.Controllers
         [Route("{id}")]
         public async Task<IResult> DeleteCategory(int id)
         {
-            await _sender.Send(new DeleteCategoryCommand(id));
+            await sender.Send(new DeleteCategoryCommand(id));
             return Results.NoContent();
         }
 
@@ -61,31 +51,31 @@ namespace Web.Controllers
         // But it requires a more complex implementation.
         private async Task<CategoryDtoWithLinks> SetCategoryLinks(CategoryDto category)
         {
-            CategoryDtoWithLinks categoryWithLinks = _mapper.Map<CategoryDto, CategoryDtoWithLinks>(category);
+            CategoryDtoWithLinks categoryWithLinks = mapper.Map<CategoryDto, CategoryDtoWithLinks>(category);
 
             categoryWithLinks.Links =
             [
                 new Link
                 {
-                    Href = _linkGenerator.GetPathByAction(HttpContext, nameof(GetCategory)),
+                    Href = linkGenerator.GetPathByAction(HttpContext, nameof(GetCategory)),
                     Rel = "self",
                     Method = "GET"
                 },
                 new Link
                 {
-                    Href = _linkGenerator.GetPathByAction(HttpContext, nameof(AddCategory)),
+                    Href = linkGenerator.GetPathByAction(HttpContext, nameof(AddCategory)),
                     Rel = "add_category",
                     Method = "POST"
                 },
                 new Link
                 {
-                    Href = _linkGenerator.GetPathByAction(HttpContext, nameof(UpdateCategory)),
+                    Href = linkGenerator.GetPathByAction(HttpContext, nameof(UpdateCategory)),
                     Rel = "update_category",
                     Method = "PUT"
                 },
                 new Link
                 {
-                    Href = _linkGenerator.GetPathByAction(HttpContext, nameof(DeleteCategory), values:new{ id = category.Id }),
+                    Href = linkGenerator.GetPathByAction(HttpContext, nameof(DeleteCategory), values:new{ id = category.Id }),
                     Rel = "delete_category",
                     Method = "DELETE"
                 },

@@ -16,7 +16,11 @@ public class GetCategoryQueryHandler(IApplicationDbContext context, IMapper mapp
 {
     public async Task<CategoryDto> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
     {
-        Category? category = await context.Categories.FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
+        Category? category = await context.Categories
+            .AsNoTracking()
+            .Include(c => c.ParentCategory)
+            .FirstOrDefaultAsync(c => c.Id == request.id, cancellationToken: cancellationToken);
+
         return mapper.Map<CategoryDto>(category);
     }
 }

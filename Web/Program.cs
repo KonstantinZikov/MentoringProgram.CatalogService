@@ -6,6 +6,7 @@ using System.Reflection;
 using Web.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Application.Common.Interfaces;
+using Web.GraphQL;
 using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +63,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType(q => q.Name("Query"))
+        .AddType<CategoryQuery>()
+        .AddType<ItemQuery>()
+    .AddMutationType(m => m.Name("Mutation"))
+        .AddType<CategoryMutation>()
+        .AddType<ItemMutation>()
+    .AddErrorFilter<GraphQLExceptionFilter>();
+
 var app = builder.Build();
 
 var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
@@ -86,5 +97,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
+
+app.UseRouting().UseEndpoints(e => e.MapGraphQL());
 
 app.Run();
