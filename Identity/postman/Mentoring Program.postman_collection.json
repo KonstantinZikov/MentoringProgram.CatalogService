@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "c413e5ce-e4d4-475d-ae44-d57286e1923d",
+		"name": "Mentoring Program",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3164987"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"postman.setGlobalVariable(\"Token\", \"Bearer \" + jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "MentoringProgram",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "secret",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "Alice",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Pass123$",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid catalog carting",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{IdentityServer}}/connect/token",
+					"host": [
+						"{{IdentityServer}}"
+					],
+					"path": [
+						"connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Categories",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{CatalogService}}/api/v1/categories",
+					"host": [
+						"{{CatalogService}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Cart",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "text",
+						"equals": true
+					}
+				],
+				"url": {
+					"raw": "{{CartingService}}/api/v1/Cart/1",
+					"host": [
+						"{{CartingService}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Cart",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
